@@ -1,2 +1,10 @@
 client/node_modules/
 server/node_modules/
+client/.env
+server/.env
+/.gitignore
+client/package-lock.json
+server/package-lock.json
+client/yarn.lock
+server/node_modules/.package-lock.json
+
