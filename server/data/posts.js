@@ -1,69 +1,68 @@
+import { getPosts } from '../database/database.js';
 import * as userRepository from './auth.js';
-import { db } from '../db/database.js';
+import MongoDb from 'mongodb';
+const ObjectId = MongoDb.ObjectId;
 
-const SELECT_JOIN = 'SELECT po.id, po.text, po.createDate , po.userId , us.username, us.name, us.url FROM posts as po JOIN users as us ON po.userId = us.id';
-const ORDER_DESC = 'ORDER BY po.createDate DESC';
 export async function getAll(){
-    // return Promise.all(
-    //     postsArr.map(async (post)=>{
-    //         const { username, name, url } = await userRepository.findById(
-    //             post.userId
-    //         );
-    //         return {...post, username, name, url};
-    //     })        
-    // );
-    return db
-    .execute(`${SELECT_JOIN} ${ORDER_DESC}`)
-    .then(result => result[0]);
+    return getPosts()
+    .find()
+    .sort({createdAt: -1})
+    .toArray()
+    .then(mapPosts);
 }
 
 export async function getAllByUsername(username){
-    // return getAll().then((postsArr) => 
-    // postsArr.filter((post) => post.username === username));
-    return db
-    .execute(`${SELECT_JOIN} WHERE us.username=? ${ORDER_DESC}`, [username])
-    .then(result => result[0]);
+    return getPosts()
+    .find({username})
+    .sort({createdAt: -1})
+    .toArray()
+    .then(mapPosts);
 }
 
 export async function getById(id){
-    // const found = postsArr.find((post) => post.id === id);
-    // if(!found){
-    //     return null;
-    // }
-    // const { username, name, url } = await userRepository.findById(found.userId);
-    // return { ...found, username, name, url};
-    return db
-    .execute(`${SELECT_JOIN} WHERE po.id=?`, [id])
-    .then(result => result[0][0]);
-
+    return getPosts()
+    .findOne({_id: new ObjectId(id)})
+    .then(mapOptionalPost);
 }
 
 export async function create(text, userId){
-    // const post = {
-    //     id: Date.now().toString(),
-    //     text,
-    //     createDate: new Date(),
-    //     userId,
-    // };
-    // postsArr = [post, ...postsArr]; //배열 앞부분에 넣어야해서 push가 아닌 이런식으로 넣어주기
-    // return getById(post.id);
-    return db.execute(
-        'INSERT INTO posts(text, createDate, userId) VALUES(?,?,?)',
-        [text, new Date(), userId]
-        ).then((result) => getById(result[0].insertId));
+    const {name, username, url } = await userRepository.findById(userId);
+    const post = {
+        text,
+        createdAt: new Date(),
+        userId,
+        name: name,
+        username: username,
+        url: url,
+    };
+    return getPosts()
+    .insertOne(post)
+    .then((data) => {
+        const newPost = mapOptionalPost({...post, _id: data.insertedId});
+        console.log(newPost);
+        return newPost;
+    })
 }
 
 export async function update(id, text){
-    // const post = postsArr.find(post => post.id === id);
-    // if(post){
-    // post.text = text;
-    // }
-    // return getById(post.id);
-    return db.execute('UPDATE posts SET text=? WHERE id=?',[text,id])
-    .then(() => getById(id));
+   return getPosts()
+   .findOneAndUpdate(
+    {_id: new ObjectId(id)},
+    { $set: {text}},
+    { returnDocument: 'after'} //이걸 명시하지않으면 수정 이전에 해당하는 객체를 받아옴
+   )
+   .then(result => result.value)
+   .then(mapOptionalPost);
 }
 
 export async function remove(id){
-    //postsArr = postsArr.filter(post => post.id !== id);
-    return db.execute('DELETE FROM posts WHERE id=?' , [id]);
+    return getPosts().deleteOne({_id: new ObjectId(id)});
+}
+
+function mapOptionalPost(post){
+    return post ? {...post, id: post._id.toString()} : post; 
+}
+
+function mapPosts(posts){
+    return posts.map((post) => mapOptionalPost(post));
 }
