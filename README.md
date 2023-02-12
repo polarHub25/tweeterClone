@@ -1,4 +1,4 @@
-# tweeterClone
+# twitterClone
 tweeter Clone Coding :) 
 
 
