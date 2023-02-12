@@ -9,7 +9,7 @@ const Header = memo(({ username, onLogout, onMyTweets, onAllTweets }) => {
         {username && <span className='logo-user'>@{username}</span>}
       </div>
       {username && (
-        <nav className='menu'>s
+        <nav className='menu'>
           <button onClick={onAllTweets}>All Tweets</button>
           <button onClick={onMyTweets}>My Tweets</button>
           <button className='menu-item' onClick={onLogout}>
