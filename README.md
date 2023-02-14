@@ -1,4 +1,4 @@
-# tweeterClone
+# twitterClone
 tweeter Clone Coding :) 
 
 
@@ -12,8 +12,12 @@ tweeter Clone Coding :)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248.svg?&style=for-the-badge&logo=MongoDB&logoColor=black)
 ![Git](https://img.shields.io/badge/Git-F05032.svg?&style=for-the-badge&logo=Git&logoColor=black)
 
-### [API Spec ⚡](https://satisfying-elephant-316.notion.site/API-Spec-1aee94ca79e0413eab7de050a0603e3b)
+### [프로젝트 정리 ⚡](https://www.notion.so/twitter-clone-project-ad4706699dbd41ff8a7601e27dee4443?pvs=4)
 
+#### 배포할 때 깃 오류로 인해서 백엔드 레파지토리를 분리 (hwitter-backend)
+
+#### 드디어 ~ ! 1차 배포 !!! 😄
+https://polarwitter.netlify.app/
 <!--
 
 <img alt="Java" src ="https://img.shields.io/badge/JAVA-3776AB.svg?&style=for-the-badge&logo=JAVA&logoColor=White"/>
