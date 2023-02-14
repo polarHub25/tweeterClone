@@ -13,12 +13,12 @@ import Login from '../pages/Login';
 
 const AuthContext = createContext({});
 
-const contextRef = createRef();
-
+const tokenRef = createRef(); // user token 
+console.log('tokenRef::' ,tokenRef);
 export function AuthProvider({ authService, authErrorEventBus, children }) {
   const [user, setUser] = useState(undefined);
 
-  useImperativeHandle(contextRef, () => (user ? user.token : undefined));
+  useImperativeHandle(tokenRef, () => (user ? user.token : undefined));
 
   useEffect(() => {
     authErrorEventBus.listen((err) => {
@@ -84,5 +84,5 @@ export class AuthErrorEventBus {
 }
 
 export default AuthContext;
-export const fetchToken = () => contextRef.current;
+export const fetchToken = () => tokenRef.current; // 메모리상의 사용자 토큰
 export const useAuth = () => useContext(AuthContext);

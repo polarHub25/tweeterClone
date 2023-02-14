@@ -5,13 +5,14 @@ export default class HttpClient{
     }
 
     async fetch(url, options){
-        //console.log('http : ' , url , options);
+        console.log('http : ' , url , options);
         const res = await fetch(`${this.baseURL}${url}`,{
             ...options,
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers,
             },
+            credentials: 'include',
         });
         let data;
         try{
